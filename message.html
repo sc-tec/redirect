@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Please wait while processing...</title>
+  <style>
+    body {
+      background: #fff;
+      margin: 80px 0 0 50px;
+      color: #000;
+      font: 14px Arial;
+      font-weight: 100;
+    }
+
+    #header1 {
+      font-family: Arial;
+      font-weight: 100;
+      font-stretch: normal;
+      font-size: 3rem;
+    }
+
+    #submit1 {
+      color: #36f;
+      background: transparent;
+      font: 14px Arial;
+      border: none;
+      background: transparent;
+      display: inline;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    #form1 {
+      position: fixed;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      z-index: 1;
+      animation: fadeIn 3s ease-in forwards;
+    }
+
+    #form1>div {
+      height: 300px;
+      max-height: 100vh;
+      overflow: auto;
+    }
+
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(16, 16, 16, 0.5);
+      animation: fadeOut 3s ease-in forwards;
+    }
+
+    #loading>div {
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+    }
+
+    #loading>div>div {
+      position: absolute;
+      display: block;
+      width: 160px;
+      height: 160px;
+      top: 20px;
+      left: 20px;
+      border-radius: 80px;
+      box-shadow: 0 6px 0 0 #ffffff;
+      animation: ring 1s linear infinite;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 100%;
+      }
+
+      90% {
+        opacity: 100%;
+      }
+
+      100% {
+        opacity: 10%;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0%;
+      }
+
+      90% {
+        opacity: 0%;
+      }
+
+      100% {
+        opacity: 100%;
+      }
+    }
+
+    @keyframes ring {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="form1">
+    <div>
+      <p>
+        <span id="label1">Transaction completed, please close this page.</span>
+      </p>
+    </div>
+  </div>
+  <div id="loading">
+    <div>
+      <div></div>
+    </div>
+  </div>
+  <script>
+    // target domain, to be confirmed
+    var origin = "https://netsuite-tec.ap.ngrok.io"
+
+    if (!!window.opener) {
+      var params = parseQueryString()
+      if (!!Object.keys(params).length) {
+        var count = 0
+        setInterval(function () {
+          try {
+            opener.postMessage(JSON.stringify(params), origin)
+            console.log({ params: params, origin: origin })
+          } catch (ex) {
+            console.error(ex)
+          }
+          if (++count > 2) {
+            try {
+              window.close()
+            } catch (ex) {
+              console.error(ex)
+            }
+          }
+        }, 200)
+      }
+    }
+    function parseQueryString() {
+      var ss = location.search.replace(/^\?/, '').split('&')
+      var params = {}
+      for (var i = 0, len = ss.length; i < len; i++) {
+        var idx = ss[i].indexOf('=')
+        var field = decodeURIComponent(ss[i])
+        var value = ''
+        if (idx >= 0) {
+          field = decodeURIComponent(ss[i].substr(0, idx))
+          value = decodeURIComponent(ss[i].substr(idx + 1))
+        }
+        params[field] = value
+      }
+      return params
+    }
+  </script>
+</body>
+
+</html>
